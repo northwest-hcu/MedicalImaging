@@ -1,15 +1,13 @@
 [tool.poetry]
-name = "medical-imaging"
+name = "MedicalImaging"
 version = "0.1.0"
 description = ""
 authors = ["戌亥 <mi69002@e.hiroshima-cu.ac.jp>"]
 license = "MIT"
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.10.0"
 pillow = "^10.3.0"
-
 
 [build-system]
 requires = ["poetry-core"]
