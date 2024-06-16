@@ -27,8 +27,7 @@
 #### `git clone https://github.com/pyenv/pyenv.git ~/.pyenv` on bash.
 #### pyenv path is `"$HOME/.pyenv/bin/pyenv"`.
 #### Add this PATH.
-#### `echo "export PYENV=$HOME/.pyenv/pyenv-win" >> "$HOME/.bash_profile"` on bash.
-#### `echo "export PYENV_HOME=$HOME/.pyenv/pyenv-win" >> "$HOME/.bash_profile"` on bash.
+#### `echo "export PYENV=$HOME/.pyenv" >> "$HOME/.bash_profile"` on bash.
 #### `source "$HOME/.bash_profile"` on bash.
 #### `echo "export PATH=$PYENV/bin:\$PATH" >> "$HOME/.bash_profile"` on bash. 
 #### `echo "export PATH=$PYENV/shims:\$PATH" >> "$HOME/.bash_profile"` on bash. 
