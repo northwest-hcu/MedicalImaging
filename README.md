@@ -10,9 +10,12 @@
 #### `git clone https://github.com/pyenv-win/pyenv-win.git "$HOME/.pyenv"` on bash.
 #### pyenv path is `"$HOME/.pyenv/pyenv-win/bin/pyenv"`.
 #### Add this to PATH.
-#### `echo "export PYENV_ROOT=$HOME/.pyenv" >> "$HOME/.bash_profile"` on bash.
+#### `echo "export PYENV=$HOME/.pyenv/pyenv-win" >> "$HOME/.bash_profile"` on bash.
+#### `echo "export PYENV_ROOT=$HOME/.pyenv/pyenv-win" >> "$HOME/.bash_profile"` on bash.
+#### `echo "export PYENV_HOME=$HOME/.pyenv/pyenv-win" >> "$HOME/.bash_profile"` on bash.
 #### `source "$HOME/.bash_profile"` on bash.
-#### `echo "export PATH=$PYENV_ROOT/shims:\$PATH" >> "$HOME/.bash_profile"` on bash. 
+#### `echo "export PATH=$HOME/.pyenv/pyenv-win/bin:\$PATH" >> "$HOME/.bash_profile"` on bash. 
+#### `echo "export PATH=$HOME/.pyenv/pyenv-win/shims:\$PATH" >> "$HOME/.bash_profile"` on bash. 
 #### `source "$HOME/.bash_profile"` on bash.
 
 # 1. Setup tools (for Mac or Linux)
@@ -46,4 +49,4 @@
 #### `poetry install --no-root`
 
 # 3. Show GUI App.
-#### `poetry run python gui.py`
+#### `poetry run python main.py`

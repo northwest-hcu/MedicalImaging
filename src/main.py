@@ -25,7 +25,6 @@ def get_diff_line(bin_map, axis=0) -> np.ndarray:
     diff_line = np.diff(mean_line, n=1)
     return diff_line
 
-
 if __name__ == "__main__":
     print(sys.argv)
     margin = 0.04
