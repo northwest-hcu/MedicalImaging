@@ -41,12 +41,14 @@
 #### `cd src`
 #### `poetry init`
 
-# 2. Setup python script.
-#### `cd src`
-#### `pyenv install 3.10.0`
-#### `pyenv rehash`
-#### `pyenv local 3.10.0`
-#### `poetry install --no-root`
+# 2. Setup python local environment.
+#### `cd src` on bash.
+#### `poetry config virtualenvs.in-project true --local` on bash.
+#### Installation environment.
+#### `pyenv install 3.10.0` on bash.
+#### `pyenv rehash` on bash.
+#### `pyenv local 3.10.0` on bash.
+#### `poetry install --no-root` on bash.
 
 # 3. Show GUI App.
 #### `poetry run python main.py`
