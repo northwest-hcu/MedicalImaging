@@ -45,10 +45,10 @@ def bitmap2wave(bitmap: Bitmap, direction: Direction='LEFT') -> Wave:
                 peak if h else bm.shape[axis] - 1 
                 for peak, h in zip(peaks, hit)
             ])
-    # if direction == 'RIGHT':
-    #     wave = np.flip(wave)
-    if direction == 'BOTTOM':
+    if direction == 'RIGHT':
         # wave = np.flip(wave)
+        wave = np.asarray([(bitmap.shape[axis] - 1) - bit for bit in wave])
+    if direction == 'BOTTOM':
         wave = np.asarray([(bitmap.shape[axis] - 1) - bit for bit in wave])
     return wave
 
