@@ -15,8 +15,7 @@ def bitmap_plot(bitmap: Bitmap, ax: Axes=None, title: str="Window Title") -> Non
     if ax is None:
         fig = plt.figure(title, figsize=(8, 8))
         ax = fig.add_axes((0, 0, 1, 1))
-    ax.set_cmap('binary_r')
-    ax.imshow(bitmap)
+    ax.imshow(bitmap, cmap='binary_r')
     ax.set_xticks([])
     ax.set_yticks([])
     plt.show(block=False)
@@ -26,7 +25,14 @@ def wave_plot(wave: Wave, ax: Axes=None, title: str="Window Title") -> None:
     if ax is None:
         fig = plt.figure(title, figsize=(8, 8))
         ax = fig.add_axes((0, 0, 1, 1))
-    ax.plot(np.arange(0, wave.shape[0]))
+    ax.plot(np.arange(0, wave.shape[0]), wave)
+    ax.set_xlim([0, wave.shape[0]])
+    ax.set_ylim([wave.shape[0], 0])
+    ax.set_xticks(np.arange(0, wave.shape[0], 300))
+    ax.set_yticks(np.arange(0, wave.shape[0], 300))
+    ax.set_aspect('equal')
+    ax.xaxis.tick_top()
+    ax.grid(True)
     plt.show(block=False)
 
 # ++++++++++++++++++++++++++++++++++++++++
@@ -84,19 +90,27 @@ def relative_plot(
         margin: float=0.025
     ) -> tuple[Axes, Axes, Axes, Axes, Axes]:
     fig = plt.figure(title, figsize=(8, 8))
-    image_ax = fig.add_axes((0, 0, 1, 1))
-    left_ax = fig.add_axes((margin, 1 - (margin * 2 + 0.3), 0.3, 0.3))
-    right_ax = fig.add_axes((1 - (margin * 2 + 0.3), 1 - (margin * 2 + 0.3), 0.3, 0.3))
-    top_ax = fig.add_axes((margin * 2 + 0.3, 1 - margin, 0.3, 0.3))
-    bottom_ax = fig.add_axes((margin * 2 + 0.3, 1 - (margin), 0.3, 0.3))
+    image_ax = fig.add_subplot(3, 3, 5)
+    left_ax = fig.add_subplot(3, 3, 4)
+    right_ax = fig.add_subplot(3, 3, 6)
+    top_ax = fig.add_subplot(3, 3, 2)
+    bottom_ax = fig.add_subplot(3, 3, 8)
+    # fig, axes = plt.subplots(3, 3, sharex=True, sharey=True)
+    # image_ax = axes[1, 1]
+    # left_ax = axes[0, 1]
+    # right_ax = axes[2, 1]
+    # top_ax = axes[1, 0]
+    # bottom_ax = axes[1, 2]
+    # fig = plt.figure(title, figsize=(8, 8))
+    # image_ax = fig.add_axes((0.3 + margin * 2, 1 - (0.3 * 2 + margin * 2), 0.3, 0.3))
+    # left_ax = fig.add_axes((margin * 1, 1 - (margin * 2 + 0.3 * 2), 0.3, 0.3))
+    # right_ax = fig.add_axes((1 - (margin * 1 + 0.3), 1 - (0.3 * 2 + margin * 2), 0.3, 0.3))
+    # top_ax = fig.add_axes((margin * 2 + 0.3, 1 - (margin + 0.3), 0.3, 0.3))
+    # bottom_ax = fig.add_axes((margin * 2 + 0.3, margin, 0.3, 0.3))
     bitmap_plot(bitmap, ax=image_ax)
     wave_plot(left_wave, ax=left_ax)
     wave_plot(right_wave, ax=right_ax)
     wave_plot(top_wave, ax=top_ax)
     wave_plot(bottom_wave, ax=bottom_ax)
-    left_ax.set_xlim([0, bitmap.shape[WIDTH_DIRECTION]])
-    right_ax.set_xlim([0, bitmap.shape[WIDTH_DIRECTION]])
-    top_ax.set_xlim([0, bitmap.shape[HEIGHT_DIRECTION]])
-    bottom_ax.set_xlim([0, bitmap.shape[HEIGHT_DIRECTION]])
 
     return image_ax, left_ax, right_ax, top_ax, bottom_ax
