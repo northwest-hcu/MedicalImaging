@@ -10,7 +10,8 @@ from tool import (
     bitmap2im,
     bitmap2wave,
     filter_bitmap,
-    get_peaks
+    get_peaks,
+    fix_wave
 )
 from graph import (
     bitmap_plot,
@@ -75,7 +76,9 @@ if __name__=='__main__':
         bottom_wave_peaks,
         [bottom_wave[peak] for peak in bottom_wave_peaks]
     )
-
+    # 補助線と波形の結合（上）
+    overlap_wave = fix_wave(top_wave, top_wave_left_peak, top_wave_right_peak)
+    wave_plot(overlap_wave)
     
     # グラフが閉じないように待機
     input()
