@@ -76,10 +76,27 @@ if __name__=='__main__':
         bottom_wave_peaks,
         [bottom_wave[peak] for peak in bottom_wave_peaks]
     )
-    # 補助線と波形の結合（上）
-    overlap_wave = fix_wave(top_wave, top_wave_left_peak, top_wave_right_peak)
-    wave_plot(overlap_wave)
     
+    # 補助線と波形の結合（上）
+    left_wave = fix_wave(left_wave, left_wave_left_peak, left_wave_right_peak)
+    # wave_plot(left_wave)
+    right_wave = fix_wave(right_wave, right_wave_left_peak, right_wave_right_peak)
+    # wave_plot(right_wave)
+    top_wave = fix_wave(top_wave, top_wave_left_peak, top_wave_right_peak)
+    # wave_plot(top_wave)
+    bottom_wave = fix_wave(bottom_wave, bottom_wave_left_peak, bottom_wave_right_peak)
+    # wave_plot(bottom_wave)
+    
+    image_ax, left_ax, right_ax, top_ax, bottom_ax = relative_plot(
+        filtered_bitmap,
+        left_wave,
+        right_wave,
+        top_wave,
+        bottom_wave
+    )
+
+    
+
     # グラフが閉じないように待機
     input()
 

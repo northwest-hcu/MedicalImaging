@@ -78,15 +78,25 @@ def get_peaks(wave: Wave) -> tuple[Bit]:
     right_side_peak = (wave_length - 1) - right_side_peak
     return left_side_peak, right_side_peak
 
+def cut_threshold(value: int, maximum: int, minimum: int=0) -> int:
+    if value < minimum:
+        return minimum
+    elif value > maximum:
+        return maximum
+    else:
+        return value
+
 def fix_wave(wave: Wave, left_peak: Bit, right_peak: Bit) -> Wave:
-    rate = (wave[right_peak] - wave[left_peak]) / right_peak - left_peak
+    rate = (wave[right_peak] - wave[left_peak]) / (right_peak - left_peak)
     peak_range = np.arange(left_peak, right_peak + 1, 1, dtype=np.int16)
     peak_range = peak_range * rate + wave[left_peak]
     print(wave[left_peak], wave[right_peak], rate)
     peak_wave = [
         bit
         if i < left_peak or i > right_peak 
-        else int(peak_range[i - left_peak])
+        else cut_threshold(
+            int(peak_range[i - left_peak]), wave.shape[0]
+        ) 
         for i, bit in enumerate(wave)]
     peak_wave = np.asarray(peak_wave)
     return peak_wave
