@@ -58,7 +58,7 @@ def filter_bitmap(bitmap: Bitmap, border: int = int(255 / 2)) -> Bitmap:
     return filtered_bitmap
 
 # 波形解析 山の頂点を取得
-def get_peaks(wave: Wave) -> tuple[Bit]:
+def get_peaks(wave: Wave, margin: int=0) -> tuple[Bit]:
     wave_length = wave.shape[0]
     # 左からの波形
     left_side_wave = wave.copy()
@@ -71,9 +71,9 @@ def get_peaks(wave: Wave) -> tuple[Bit]:
     right_side_peak = wave_length - 1
     
     left_side_diff = np.diff(left_side_wave)
-    left_side_peak = np.argmax(left_side_diff < 0)
+    left_side_peak = np.argmax(left_side_diff < 0 - margin)
     right_side_diff = np.diff(right_side_wave)
-    right_side_peak = np.argmax(right_side_diff < 0)
+    right_side_peak = np.argmax(right_side_diff < 0 - margin)
 
     right_side_peak = (wave_length - 1) - right_side_peak
     return left_side_peak, right_side_peak
@@ -110,4 +110,10 @@ def create_mask(left_wave: Wave, right_wave: Wave, top_wave: Wave, bottom_wave: 
         mask_bitmap[0:bit, i] = 0
     for i, bit in enumerate(bottom_wave):
         mask_bitmap[bit:left_wave.shape[0] - 1, i] = 0
-    return mask_bitmap   
+    return mask_bitmap
+
+def move_mean(wave: Wave, size: int=10) -> Wave:
+    ones = np.ones(size) / size
+    mean_wave = np.convolve(wave, ones, mode="same")
+    mean_wave = np.asarray([int(bit + 0.5) for bit in mean_wave])
+    return mean_wave
