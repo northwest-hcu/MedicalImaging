@@ -90,7 +90,6 @@ def fix_wave(wave: Wave, left_peak: Bit, right_peak: Bit) -> Wave:
     rate = (wave[right_peak] - wave[left_peak]) / (right_peak - left_peak)
     peak_range = np.arange(left_peak, right_peak + 1, 1, dtype=np.int16)
     peak_range = peak_range * rate + wave[left_peak]
-    print(wave[left_peak], wave[right_peak], rate)
     peak_wave = [
         bit
         if i < left_peak or i > right_peak 
@@ -100,3 +99,15 @@ def fix_wave(wave: Wave, left_peak: Bit, right_peak: Bit) -> Wave:
         for i, bit in enumerate(wave)]
     peak_wave = np.asarray(peak_wave)
     return peak_wave
+
+def create_mask(left_wave: Wave, right_wave: Wave, top_wave: Wave, bottom_wave: Wave) -> Bitmap:
+    mask_bitmap = np.ones((left_wave.shape[0], top_wave.shape[0]), dtype=np.int16)
+    for i, bit in enumerate(left_wave):
+        mask_bitmap[i, 0:bit] = 0
+    for i, bit in enumerate(right_wave):
+        mask_bitmap[i, bit:top_wave.shape[0] - 1] = 0
+    for i, bit in enumerate(top_wave):
+        mask_bitmap[0:bit, i] = 0
+    for i, bit in enumerate(bottom_wave):
+        mask_bitmap[bit:left_wave.shape[0] - 1, i] = 0
+    return mask_bitmap   

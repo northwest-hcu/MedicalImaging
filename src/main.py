@@ -11,7 +11,8 @@ from tool import (
     bitmap2wave,
     filter_bitmap,
     get_peaks,
-    fix_wave
+    fix_wave,
+    create_mask
 )
 from graph import (
     bitmap_plot,
@@ -21,7 +22,7 @@ from graph import (
 import numpy as np
 
 if __name__=='__main__':
-    path = "../images/large/image04.pgm"
+    path = "../images/large/image05.pgm"
     bitmap = im2bitmap(path2im(path))
     filtered_bitmap = filter_bitmap(bitmap)
     # bitmap_plot(filtered_bitmap)
@@ -88,14 +89,22 @@ if __name__=='__main__':
     # wave_plot(bottom_wave)
     
     image_ax, left_ax, right_ax, top_ax, bottom_ax = relative_plot(
-        filtered_bitmap,
+        bitmap,
         left_wave,
         right_wave,
         top_wave,
         bottom_wave
     )
 
-    
+    mask_bitmap = create_mask(
+        left_wave,
+        right_wave,
+        top_wave,
+        bottom_wave
+    )
+
+    masked_bitmap = bitmap * mask_bitmap
+    bitmap_plot(masked_bitmap)
 
     # グラフが閉じないように待機
     input()
