@@ -58,6 +58,26 @@ def filter_bitmap(bitmap: Bitmap, border: int = int(255 / 2)) -> Bitmap:
     return filtered_bitmap
 
 # 波形解析 山の頂点を取得
+# def get_peaks(wave: Wave, margin: int=0) -> tuple[Bit]:
+#     wave_length = wave.shape[0]
+#     # 左からの波形
+#     left_side_wave = wave.copy()
+#     # 右からの波形
+#     right_side_wave = wave.copy()
+#     right_side_wave = np.flip(right_side_wave)
+#     # 左からの波形のpeak地点の初期化
+#     left_side_peak = wave_length - 1
+#     # 右からの波形のpeak地点の初期化
+#     right_side_peak = wave_length - 1
+    
+#     left_side_diff = np.diff(left_side_wave)
+#     left_side_peak = np.argmax(left_side_diff < 0 - margin)
+#     right_side_diff = np.diff(right_side_wave)
+#     right_side_peak = np.argmax(right_side_diff < 0 - margin)
+
+#     right_side_peak = (wave_length - 1) - right_side_peak
+#     return left_side_peak, right_side_peak
+
 def get_peaks(wave: Wave, margin: int=0) -> tuple[Bit]:
     wave_length = wave.shape[0]
     # 左からの波形
@@ -66,14 +86,9 @@ def get_peaks(wave: Wave, margin: int=0) -> tuple[Bit]:
     right_side_wave = wave.copy()
     right_side_wave = np.flip(right_side_wave)
     # 左からの波形のpeak地点の初期化
-    left_side_peak = wave_length - 1
+    left_side_peak = np.argmax(left_side_wave)
     # 右からの波形のpeak地点の初期化
-    right_side_peak = wave_length - 1
-    
-    left_side_diff = np.diff(left_side_wave)
-    left_side_peak = np.argmax(left_side_diff < 0 - margin)
-    right_side_diff = np.diff(right_side_wave)
-    right_side_peak = np.argmax(right_side_diff < 0 - margin)
+    right_side_peak = np.argmax(right_side_wave)
 
     right_side_peak = (wave_length - 1) - right_side_peak
     return left_side_peak, right_side_peak
@@ -86,17 +101,37 @@ def cut_threshold(value: int, maximum: int, minimum: int=0) -> int:
     else:
         return value
 
+# def fix_wave(wave: Wave, left_peak: Bit, right_peak: Bit) -> Wave:
+#     rate = (wave[right_peak] - wave[left_peak]) / (right_peak - left_peak)
+#     peak_range = np.arange(left_peak, right_peak + 1, 1, dtype=np.int16)
+#     peak_range = peak_range * rate + wave[left_peak]
+#     peak_wave = [
+#         bit
+#         if i < left_peak or i > right_peak 
+#         else cut_threshold(
+#             int(peak_range[i - left_peak]), wave.shape[0]
+#         ) 
+#         for i, bit in enumerate(wave)]
+#     peak_wave = np.asarray(peak_wave)
+#     return peak_wave
+
 def fix_wave(wave: Wave, left_peak: Bit, right_peak: Bit) -> Wave:
-    rate = (wave[right_peak] - wave[left_peak]) / (right_peak - left_peak)
-    peak_range = np.arange(left_peak, right_peak + 1, 1, dtype=np.int16)
-    peak_range = peak_range * rate + wave[left_peak]
+    maximum = np.max(wave)
+    left_rate = (wave[left_peak] - wave[0]) / left_peak
+    left_peak_range = np.arange(0, left_peak + 1, 1, dtype=np.int16)
+    right_rate = (wave[-1] - wave[right_peak]) / (wave.shape[0] - 1 - right_peak)
+    right_peak_range = np.arange(right_peak,  wave.shape[0], 1, dtype=np.int16)
+    left_peak_range = left_peak_range * left_rate + wave[0]
+    print(right_peak_range * right_rate)
+    right_peak_range = right_peak_range * right_rate + wave[right_peak]
     peak_wave = [
-        bit
-        if i < left_peak or i > right_peak 
-        else cut_threshold(
-            int(peak_range[i - left_peak]), wave.shape[0]
-        ) 
-        for i, bit in enumerate(wave)]
+        cut_threshold(int(left_peak_range[i]), wave.shape[0])
+        if i < left_peak 
+        else (cut_threshold(int(right_peak_range[i - right_peak]), wave.shape[0])
+        if i > right_peak
+        else maximum)
+        for i in range(wave.shape[0])]
+    # print(peak_wave)
     peak_wave = np.asarray(peak_wave)
     return peak_wave
 
