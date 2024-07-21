@@ -20,15 +20,10 @@ from graph import (
     relative_plot
 )
 import numpy as np
-import cv2
 
 if __name__=='__main__':
     margin = 0
-    path = "../images/large/image04.pgm"
-    # bitmap = cv2.GaussianBlur(
-    #     im2bitmap(path2im(path)), 
-    #     (9, 9), 0
-    # )
+    path = "../../images/large/image04.pgm"
     bitmap = im2bitmap(path2im(path))
     
     filtered_bitmap = filter_bitmap(bitmap)
@@ -45,52 +40,72 @@ if __name__=='__main__':
         bottom_wave
     )
     # 左側の波形の補助線
-    left_wave_left_peak, left_wave_right_peak = get_peaks(
-    # left_wave_peaks = get_peaks(
+    left_wave_left_peaks, left_wave_right_peaks = get_peaks(
         # 左側は上が小さくなるので反転させる
-        np.asarray([(left_wave.shape[0] - 1) - bit for bit in left_wave]),
-        margin=margin
+        np.asarray([(left_wave.shape[0] - 1) - bit for bit in left_wave])
     )
-    left_wave_peaks = np.asarray([left_wave_left_peak, left_wave_right_peak])
     # 左側は波形が90度傾くのでx軸とy軸を入れ替える
     left_ax.plot(
-        [left_wave[peak] for peak in left_wave_peaks],
-        left_wave_peaks
+        [left_wave[peak] for peak in left_wave_left_peaks],
+        left_wave_left_peaks
+    )
+    left_ax.plot(
+        [left_wave[peak] for peak in left_wave_right_peaks],
+        left_wave_right_peaks
+    )
+    left_ax.plot(
+        (np.min(left_wave), np.min(left_wave)),
+        (left_wave_left_peaks[-1], left_wave_right_peaks[0])
     )
     # 右側の波形の補助線
-    right_wave_left_peak, right_wave_right_peak = get_peaks(
-    # right_wave_peaks = get_peaks(
-        right_wave,
-        margin=margin
+    right_wave_left_peaks, right_wave_right_peaks = get_peaks(
+        right_wave
     )
-    right_wave_peaks = np.asarray([right_wave_left_peak, right_wave_right_peak])
     # 右側は波形が90度傾くのでx軸とy軸を入れ替える
     right_ax.plot(
-        [right_wave[peak] for peak in right_wave_peaks],
-        right_wave_peaks
+        [right_wave[peak] for peak in right_wave_left_peaks],
+        right_wave_left_peaks
+    )
+    right_ax.plot(
+        [right_wave[peak] for peak in right_wave_right_peaks],
+        right_wave_right_peaks
+    )
+    right_ax.plot(
+        (np.max(right_wave), np.max(right_wave)),
+        (right_wave_left_peaks[-1], right_wave_right_peaks[0])
     )
     # 上側の波形の補助線
-    top_wave_left_peak, top_wave_right_peak = get_peaks(
-    # top_wave_peaks = get_peaks(
+    top_wave_left_peaks, top_wave_right_peaks = get_peaks(
         # 上側は上が小さくなるので反転させる
-        np.asarray([(top_wave.shape[0] - 1) - bit for bit in top_wave]),
-        margin=margin
+        np.asarray([(top_wave.shape[0] - 1) - bit for bit in top_wave])
     )
-    top_wave_peaks = np.asarray([top_wave_left_peak, top_wave_right_peak])
     top_ax.plot(
-        top_wave_peaks,
-        [top_wave[peak] for peak in top_wave_peaks]
+        top_wave_left_peaks,
+        [top_wave[peak] for peak in top_wave_left_peaks]
+    )
+    top_ax.plot(
+        top_wave_right_peaks,
+        [top_wave[peak] for peak in top_wave_right_peaks]
+    )
+    top_ax.plot(
+        (top_wave_left_peaks[-1], top_wave_right_peaks[0]),
+        (np.min(top_wave), np.min(top_wave))
     )
     # 下側の波形の補助線
-    bottom_wave_left_peak, bottom_wave_right_peak = get_peaks(
-    # bottom_wave_peaks = get_peaks(
-        bottom_wave,
-        margin=margin
+    bottom_wave_left_peaks, bottom_wave_right_peaks = get_peaks(
+        bottom_wave
     )
-    bottom_wave_peaks = np.asarray([bottom_wave_left_peak, bottom_wave_right_peak])
     bottom_ax.plot(
-        bottom_wave_peaks,
-        [bottom_wave[peak] for peak in bottom_wave_peaks]
+        bottom_wave_left_peaks,
+        [bottom_wave[peak] for peak in bottom_wave_left_peaks]
+    )
+    bottom_ax.plot(
+        bottom_wave_right_peaks,
+        [bottom_wave[peak] for peak in bottom_wave_right_peaks]
+    )
+    bottom_ax.plot(
+        (bottom_wave_left_peaks[-1], bottom_wave_right_peaks[0]),
+        (np.max(bottom_wave), np.max(bottom_wave))
     )
     # 補助線と波形の結合（上）
     left_wave = np.asarray([
@@ -101,14 +116,11 @@ if __name__=='__main__':
                 left_wave.shape[0] - 1 - bit 
                 for bit in left_wave
             ]), 
-            left_wave_left_peak, 
-            left_wave_right_peak
+            left_wave_left_peaks, 
+            left_wave_right_peaks
         )
     ])
-    
-    # wave_plot(left_wave)
-    right_wave = fix_wave(right_wave, right_wave_left_peak, right_wave_right_peak)
-    # wave_plot(right_wave)
+    right_wave = fix_wave(right_wave, right_wave_left_peaks, right_wave_right_peaks)
     top_wave = np.asarray([
         top_wave.shape[0] - 1 - bit 
         for bit in
@@ -117,13 +129,11 @@ if __name__=='__main__':
                 top_wave.shape[0] - 1 - bit 
                 for bit in top_wave
             ]), 
-            top_wave_left_peak, 
-            top_wave_right_peak
+            top_wave_left_peaks, 
+            top_wave_right_peaks
         )
     ])
-    # wave_plot(top_wave)
-    bottom_wave = fix_wave(bottom_wave, bottom_wave_left_peak, bottom_wave_right_peak)
-    # wave_plot(bottom_wave)
+    bottom_wave = fix_wave(bottom_wave, bottom_wave_left_peaks, bottom_wave_right_peaks)
     
     image_ax, left_ax, right_ax, top_ax, bottom_ax = relative_plot(
         bitmap,
@@ -141,7 +151,7 @@ if __name__=='__main__':
     )
 
     masked_bitmap = bitmap * mask_bitmap
-    # bitmap_plot(masked_bitmap)
+    bitmap_plot(masked_bitmap)
 
     # グラフが閉じないように待機
     input()
