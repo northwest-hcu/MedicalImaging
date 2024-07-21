@@ -24,8 +24,9 @@ import numpy as np
 if __name__=='__main__':
     path = "../../images/large/image04.pgm"
     bitmap = im2bitmap(path2im(path))
-    
-    filtered_bitmap = filter_bitmap(bitmap)
+    # border = np.mean(bitmap)
+    border = np.max(bitmap) - np.std(bitmap)
+    filtered_bitmap = filter_bitmap(bitmap, border=int(border))
     # bitmap_plot(filtered_bitmap)
     left_wave = bitmap2wave(filtered_bitmap, direction='LEFT')
     right_wave = bitmap2wave(filtered_bitmap, direction='RIGHT')
@@ -150,6 +151,10 @@ if __name__=='__main__':
     )
 
     masked_bitmap = bitmap * mask_bitmap
+    # 最低値に合わせる
+    # black = np.min(bitmap) + np.std(bitmap) / 10
+    black = np.min(bitmap)
+    masked_bitmap = np.where(masked_bitmap == 0, black, masked_bitmap)
     bitmap_plot(masked_bitmap)
 
     # グラフが閉じないように待機

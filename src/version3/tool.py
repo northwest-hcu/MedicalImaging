@@ -138,16 +138,16 @@ def fix_wave(wave: Wave, left_side_peaks: list[Bit], right_side_peaks: list[Bit]
     peak_wave = np.asarray(peak_wave)
     return peak_wave
 
-def create_mask(left_wave: Wave, right_wave: Wave, top_wave: Wave, bottom_wave: Wave) -> Bitmap:
+def create_mask(left_wave: Wave, right_wave: Wave, top_wave: Wave, bottom_wave: Wave, extend: int=5) -> Bitmap:
     mask_bitmap = np.ones((left_wave.shape[0], top_wave.shape[0]), dtype=np.int16)
     for i, bit in enumerate(left_wave):
-        mask_bitmap[i, 0:bit] = 0
+        mask_bitmap[i, 0:bit + extend] = 0
     for i, bit in enumerate(right_wave):
-        mask_bitmap[i, bit:top_wave.shape[0] - 1] = 0
+        mask_bitmap[i, bit - extend:top_wave.shape[0] - 1] = 0
     for i, bit in enumerate(top_wave):
-        mask_bitmap[0:bit, i] = 0
+        mask_bitmap[0:bit + extend, i] = 0
     for i, bit in enumerate(bottom_wave):
-        mask_bitmap[bit:left_wave.shape[0] - 1, i] = 0
+        mask_bitmap[bit - extend:left_wave.shape[0] - 1, i] = 0
     return mask_bitmap
 
 def move_mean(wave: Wave, size: int=10) -> Wave:
